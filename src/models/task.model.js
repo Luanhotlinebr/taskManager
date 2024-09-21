@@ -1,4 +1,5 @@
 //Models são as entidades
+//Então esse será nossa entidade Tarefa
 const {Schema, model} = require("mongoose");
 
 //schema > Esqueleto do nosso model

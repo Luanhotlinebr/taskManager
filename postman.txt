@@ -1,0 +1,2 @@
+Serve para testar as api
+Pra evitar necessidade de ficar abrindo o localhost toda hora para testar.
