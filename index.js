@@ -34,5 +34,25 @@ app.post("/tasks", async (req, res) => {
     }
 });
 
+//Criando rota para deletar uma tarefa
+app.delete("/tasks/:id", async (req, res) => {
+    try {
+        const TaskId = req.params.id;
+
+        const taskToDelete = await TaskModel.findById(TaskId);
+
+        //variavel de negação da tarefa > Se ela for uma desses valores então retornara verdadeiro > null, undefined, false ,valores esses que irá retornar;
+        if (!taskToDelete) {
+            return res.status(500).send("Está tarefa não foi encontrada.");
+        }
+
+        const deletedTask = await TaskModel.findByIdAndDelete(TaskId);
+
+        res.status(200).send(deletedTask);
+    } catch (error) {
+        res.status(5).send(error.message);
+    }
+});
+
 //Iniciou o back end
 app.listen(8000, () => console.log("Listening on port 8000!"));
