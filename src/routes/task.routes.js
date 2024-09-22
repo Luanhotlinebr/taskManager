@@ -26,7 +26,7 @@ router.patch("/:id", async (req, res) => {
 
 //Criando rota para deletar uma tarefa
 router.delete("/:id", async (req, res) => {
-    return new TaskController(req,res).deteleTask();
+    return new TaskController(req,res).detele();
 });
 
 module.exports = router;
