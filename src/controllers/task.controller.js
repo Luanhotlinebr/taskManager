@@ -87,7 +87,7 @@ class TaskController {
         }
     }
 
-    async detele() {
+    async delete() {
         try {
             const TaskId = this.req.params.id;
 
