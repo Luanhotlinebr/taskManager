@@ -1,4 +1,4 @@
-const TaskModel = require('../models/task.model');
+const TaskModel = require("../models/task.model");
 
 class TaskController {
     constructor(req, res) {
@@ -6,13 +6,94 @@ class TaskController {
         this.res = res;
     }
 
-   async getTasks(){
+    async getAll() {
         try {
             //find para procurar os registros no bd que tem no
             const tasks = await TaskModel.find({});
             this.res.status(200).send(tasks);
         } catch (error) {
             this.res.status(500).send(error.message);
+        }
+    }
+
+    async getById() {
+        try {
+            const taskId = this.req.params.id;
+
+            const task = await TaskModel.findById(taskId);
+
+            if (!task) {
+                return this.res
+                    .status(404)
+                    .send("Essa tarefa não foi encontrada.");
+            }
+
+            return this.res.status(200).send(task);
+        } catch (error) {
+            this.res.status(500).send(error.message);
+        }
+    }
+
+    async create() {
+        try {
+            //Endpoint para criar uma nova tarefa
+            const newTask = new TaskModel(this.req.body);
+            await newTask.save();
+            this.res.status(201).send(newTask);
+        } catch (error) {
+            this.res.status(500).send(error.message);
+        }
+    }
+
+    async update() {
+        try {
+            const taskId = this.req.params.id;
+            const taskData = this.req.body;
+
+            //Peguei a tarefa e armazenei na variavel
+            const taskToUpdate = await TaskModel.findById(taskId);
+
+            //Mapeou os campos que podem ser atualizados da tarefa, campos que o usuario tenta atualizar
+            const allowedUpdates = ["isCompleted"];
+            const requestedUpdates = Object.keys(taskData);
+
+            //Pra cada campo que recebou no body vai ser verificado se a lista de campos permitidos inclui update, se incluir
+            //significa que esse campo pode ser atualizado
+            for (const update of requestedUpdates) {
+                if (allowedUpdates.includes(update)) {
+                    taskToUpdate[update] = taskData[update];
+                } else {
+                    return this.res
+                        .status(500)
+                        .send("Um ou mais campos não são editáveis.");
+                }
+            }
+
+            await taskToUpdate.save();
+            return this.res.status(200).send(taskToUpdate);
+        } catch (error) {
+            return this.res.status(500).send(error.message);
+        }
+    }
+
+    async deteleTask() {
+        try {
+            const TaskId = this.req.params.id;
+
+            const taskToDelete = await TaskModel.findById(TaskId);
+
+            //variavel de negação da tarefa > Se ela for uma desses valores então retornara verdadeiro > null, undefined, false ,valores esses que irá retornar;
+            if (!taskToDelete) {
+                return this.res
+                    .status(404)
+                    .send("Está tarefa não foi encontrada.");
+            }
+
+            const deletedTask = await TaskModel.findByIdAndDelete(TaskId);
+
+            this.res.status(200).send(deletedTask);
+        } catch (error) {
+            this.res.status(5).send(error.message);
         }
     }
 }
