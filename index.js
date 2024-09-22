@@ -22,6 +22,23 @@ app.get("/tasks", async (req, res) => {
     }
 });
 
+//Criando rota para recuperar uma tarefa
+app.get("/tasks/:id", async (req, res) => {
+    try {
+        const taskId = req.params.id;
+
+        const task = await TaskModel.findById(taskId);
+
+        if (!task) {
+            return res.status(404).send("Essa tarefa não foi encontrada.");
+        }
+
+        return res.status(200).send(task);
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+});
+
 //Rota para criar uma tarefa
 app.post("/tasks", async (req, res) => {
     try {
@@ -43,7 +60,7 @@ app.delete("/tasks/:id", async (req, res) => {
 
         //variavel de negação da tarefa > Se ela for uma desses valores então retornara verdadeiro > null, undefined, false ,valores esses que irá retornar;
         if (!taskToDelete) {
-            return res.status(500).send("Está tarefa não foi encontrada.");
+            return res.status(404).send("Está tarefa não foi encontrada.");
         }
 
         const deletedTask = await TaskModel.findByIdAndDelete(TaskId);
