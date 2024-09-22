@@ -1,4 +1,5 @@
 const TaskModel = require("../models/task.model");
+const { notFoundError } = require("../errors/mongodb.errors");
 
 class TaskController {
     constructor(req, res) {
@@ -23,9 +24,7 @@ class TaskController {
             const task = await TaskModel.findById(taskId);
 
             if (!task) {
-                return this.res
-                    .status(404)
-                    .send("Essa tarefa não foi encontrada.");
+                return notFoundError(this.res);
             }
 
             return this.res.status(200).send(task);
@@ -52,6 +51,10 @@ class TaskController {
 
             //Peguei a tarefa e armazenei na variavel
             const taskToUpdate = await TaskModel.findById(taskId);
+
+            if (!taskToUpdate) {
+                return notFoundError(this.res);
+            }
 
             //Mapeou os campos que podem ser atualizados da tarefa, campos que o usuario tenta atualizar
             const allowedUpdates = ["isCompleted"];
@@ -84,9 +87,7 @@ class TaskController {
 
             //variavel de negação da tarefa > Se ela for uma desses valores então retornara verdadeiro > null, undefined, false ,valores esses que irá retornar;
             if (!taskToDelete) {
-                return this.res
-                    .status(404)
-                    .send("Está tarefa não foi encontrada.");
+                return notFoundError(this.res);
             }
 
             const deletedTask = await TaskModel.findByIdAndDelete(TaskId);
