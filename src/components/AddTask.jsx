@@ -31,7 +31,7 @@ const AddTask = ({ fetchTasks }) => {
             });
 
             await fetchTasks();
-            setTask();
+            setTask("");
         } catch (error) {
             alert.error("Algo deu errado");
         }
