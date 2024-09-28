@@ -1,8 +1,18 @@
+import { MdDeleteOutline } from "react-icons/md";
+import axios from "axios";
+import { useAlert } from "react-alert";
+
 import "./TaskItem.scss";
 
-import { MdDeleteOutline } from "react-icons/md";
- 
 const TaskItem = ({ task }) => {
+    const handleTaskDeletion = async () => {
+        try {
+            await axios.delete(`http://localhost:8000/tasks/${task._id}`);
+        } catch (error) {
+            alert.error("Algo deu errado.");
+        }
+    };
+
     return (
         <div className="task-item-container">
             <div className="task-description">
@@ -26,7 +36,11 @@ const TaskItem = ({ task }) => {
             </div>
 
             <div className="delete">
-                <MdDeleteOutline size={18} color="F97474" />
+                <MdDeleteOutline
+                    size={18}
+                    color="F97474"
+                    onClick={handleTaskDeletion}
+                />
             </div>
         </div>
     );
